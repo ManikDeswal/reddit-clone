@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.reddit.clone.DTO.AuthenticationResponse;
 import com.reddit.clone.DTO.RegisterRequest;
 import com.reddit.clone.DTO.loginRequest;
 import com.reddit.clone.Service.AuthService;
@@ -37,8 +38,8 @@ public class AuthController {
     } 
 
     @PostMapping("login")
-    public void login(@RequestBody loginRequest loginRequest){
-        authService.login(loginRequest);
+    public AuthenticationResponse login(@RequestBody loginRequest loginRequest){
+        return authService.login(loginRequest);
     }
 
   

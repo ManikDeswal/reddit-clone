@@ -9,10 +9,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import lombok.AllArgsConstructor;
+
+
 
 
 @EnableWebSecurity  
@@ -20,6 +21,14 @@ import lombok.AllArgsConstructor;
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
+
+     @Bean(BeanIds.AUTHENTICATION_MANAGER)
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception{
+        return super.authenticationManagerBean();
+    }
+    
     /*CRSF attacks occur when there are session and when we are using cookies 
     to auth and as REST APIs are stateless by defination we can safely dissable */
     @Override
@@ -31,21 +40,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         .anyRequest()
         .authenticated();
     }
+   
 
     @Autowired
-    public void configreGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception{
-        authenticationManagerBuilder.userDetailsService(userDetailsService)
-        .passwordEncoder(passwordEncoder());
-    }
-    @Bean
-    PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }  
-
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception{
-        return super.authenticationManagerBean();
-    }
+    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception{
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+    } 
 
 }
