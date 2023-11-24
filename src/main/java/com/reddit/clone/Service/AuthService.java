@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +20,13 @@ import com.reddit.clone.DTO.RegisterRequest;
 import com.reddit.clone.DTO.loginRequest;
 import com.reddit.clone.Repository.UserRepository;
 import com.reddit.clone.Repository.VerificationTokenRepository;
-import com.reddit.clone.Security.JwtProvider;
+import com.reddit.clone.    Security.JwtProvider;
 import com.reddit.clone.model.NotificationEmail;
 import com.reddit.clone.model.User;
 import com.reddit.clone.model.VerificationToken;
 
-import lombok.AllArgsConstructor;
+
+import lombok.AllArgsConstructor;   
 
 @Service
 @AllArgsConstructor
@@ -83,7 +85,12 @@ public class AuthService {
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String token=jwtProvider.generateToken(authenticate);
         return new AuthenticationResponse(token,loginRequest.getUsername());
+    } 
+
+    public User getCurrentUser(){
+        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder
+        .getContext().getAuthentication().getPrincipal();
+        return userRepository.findByUsername(principal.getUsername())
+        .orElseThrow(()->new UsernameNotFoundException("Username not Found" + principal.getUsername()));
     }
-        
-     
 }

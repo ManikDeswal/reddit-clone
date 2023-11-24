@@ -10,6 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.reddit.clone.Security.JwtAuthenticationFilter;
 
 import lombok.AllArgsConstructor;
 
@@ -22,6 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
      @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
@@ -34,11 +38,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf().disable()
-        .authorizeRequests()
-        .antMatchers("/api/auth/**")
-        .permitAll()
-        .anyRequest()
-        .authenticated();
+                           .authorizeRequests()
+                           .antMatchers("/api/auth/**")
+                           .permitAll()
+                           .anyRequest()
+                           .authenticated();
+        httpSecurity.addFilterBefore(jwtAuthenticationFilter,
+         UsernamePasswordAuthenticationFilter.class);
+
+    
     }
    
 
