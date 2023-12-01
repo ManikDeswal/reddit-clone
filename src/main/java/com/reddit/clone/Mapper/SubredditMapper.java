@@ -9,13 +9,14 @@ import org.mapstruct.Mapping;
 import com.reddit.clone.DTO.SubredditDto;
 import com.reddit.clone.model.Post;
 import com.reddit.clone.model.Subreddit;
-import java.util.List;
+
 
 
 @Mapper(componentModel = "Spring")
 public interface SubredditMapper {
 
     @Mapping(target="numberOfPosts", expression = "java(mapPosts(subreddit.getPosts()))")
+
     SubredditDto mapSubredditToDto (Subreddit subreddit);
     
     default Integer mapPosts(List<Post> numberOfPosts){
